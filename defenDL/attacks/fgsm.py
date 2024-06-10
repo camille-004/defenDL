@@ -12,7 +12,9 @@ from .base import Attack
 class FGSM(Attack):
     """Implement the Fast Gradient Sign Method (FGSM)."""
 
-    def __init__(self, model: Callable[[np.ndarray], np.ndarray], eps: float):
+    def __init__(
+        self, model: Callable[[jnp.ndarray], jnp.ndarray], eps: float
+    ):
         """Initialize the FGSM attack.
 
         Parameters

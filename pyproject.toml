@@ -22,6 +22,9 @@ pre-commit = "^3.7.1"
 line-length = 79
 lint.select = ["E", "F", "I", "A", "C"]
 
+[tool.mypy]
+ignore_missing_imports = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

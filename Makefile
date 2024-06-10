@@ -11,7 +11,7 @@ format:
 	poetry run ruff check --fix .
 
 type-check:
-	poetry run mypy .
+	poetry run mypy --config-file pyproject.toml .
 
 test:
 	poetry run pytest

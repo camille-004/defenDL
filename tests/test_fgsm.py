@@ -22,7 +22,7 @@ class DummyModel:
 
 class TestFGSM:
     @pytest.fixture
-    def model(self) -> Callable[[jnp.ndarray], jnp.ndararay]:
+    def model(self) -> Callable[[jnp.ndarray], jnp.ndarray]:
         return DummyModel()
 
     @pytest.fixture
@@ -61,7 +61,7 @@ class TestFGSM:
 
         assert (
             x_adv.size == 0
-        ), "Adverserial examples generated from empty input should also be empty."  # noqa
+        ), "Adversarial examples generated from empty input should also be empty."  # noqa
 
     def test_fgsm_single_data_point(self, fgsm: FGSM) -> None:
         x = np.array([[0.5, 0.5]])
@@ -71,10 +71,10 @@ class TestFGSM:
 
         assert (
             x_adv.shape == x.shape
-        ), "The shape of adverserial inputs should match the input shape."
+        ), "The shape of adversarial inputs should match the input shape."
         assert (x_adv >= 0).all() and (
             x_adv <= 1
-        ).all(), "Adverserial examples should be within the data range [0, 1]."
+        ).all(), "Adversarial examples should be within the data range [0, 1]."
 
     @pytest.mark.parametrize("eps", [0.0, 0.05, 0.1, 0.2])
     def test_gfsm_different_eps(
@@ -92,4 +92,4 @@ class TestFGSM:
         ), "The shape of adversarial examples should match the input shape."
         assert (x_adv >= 0).all() and (
             x_adv <= 1
-        ).all(), "Adverserial examples should be within the data range [0, 1]."
+        ).all(), "Adversarial examples should be within the data range [0, 1]."
