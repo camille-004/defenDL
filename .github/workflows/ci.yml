@@ -35,7 +35,6 @@ jobs:
             - name: Install dependencies
               run: |
                 poetry install
-                pip install "jax[cpu]==0.4.28"
               if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
 
             - name: Run linters
