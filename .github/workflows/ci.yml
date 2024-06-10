@@ -19,10 +19,16 @@ jobs:
               with:
                 python-version: '3.12'
 
+            - name: Install Poetry
+              run: curl -sSL https://install.python-poetry.org | python3 -
+
+            - name: Set Poetry config
+              run: |
+                poetry config settings.virtualenvs.in-project false
+                poetry config settings.virtualenvs.path ~/.virtualenvs
+
             - name: Install dependencies
               run: |
-                python -m pip install --upgrade pip
-                pip install poetry
                 poetry install --with dev
 
             - name: Run linters
