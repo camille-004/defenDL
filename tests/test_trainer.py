@@ -8,7 +8,7 @@ import optax
 import pytest
 from jax import random
 
-from defenDL.attacks import FGSM, PGD, BaseAttack, Model
+from defenDL.attacks import CW, FGSM, PGD, BaseAttack, Model
 from defenDL.defenses import Trainer
 
 
@@ -57,6 +57,16 @@ class TestTrainer:
         [
             (FGSM, {"eps": 0.1}),
             (PGD, {"eps": 0.1, "alpha": 0.01, "num_iter": 40}),
+            (
+                CW,
+                {
+                    "confidence": 0.0,
+                    "learning_rate": 0.01,
+                    "binary_search_steps": 9,
+                    "max_iter": 1000,
+                    "initial_const": 0.01,
+                },
+            ),
         ],
     )
     def test_training_step(
@@ -86,6 +96,16 @@ class TestTrainer:
         [
             (FGSM, {"eps": 0.1}),
             (PGD, {"eps": 0.1, "alpha": 0.01, "num_iter": 40}),
+            (
+                CW,
+                {
+                    "confidence": 0.0,
+                    "learning_rate": 0.01,
+                    "binary_search_steps": 9,
+                    "max_iter": 1000,
+                    "initial_const": 0.01,
+                },
+            ),
         ],
     )
     def test_training(
