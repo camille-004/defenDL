@@ -6,10 +6,10 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from .base import Attack
+from .base import BaseAttack
 
 
-class FGSM(Attack):
+class FGSM(BaseAttack):
     """Implement the Fast Gradient Sign Method (FGSM)."""
 
     def __init__(

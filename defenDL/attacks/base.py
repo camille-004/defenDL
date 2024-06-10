@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import numpy as np
 
 
-class Attack(ABC):
+class BaseAttack(ABC):
     """Abstract base class for adversarial attacks."""
 
     @abstractmethod

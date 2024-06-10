@@ -6,10 +6,10 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from .base import Attack
+from .base import BaseAttack
 
 
-class PGD(Attack):
+class PGD(BaseAttack):
     """Implement the Projected Gradient Descent (PGD) attack."""
 
     def __init__(

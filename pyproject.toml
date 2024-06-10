@@ -12,6 +12,7 @@ pytest = "^8.2.2"
 pytest-mock = "^3.14.0"
 numpy = "^1.26.4"
 jax = {extras = ["cpu"], version = "^0.4.28"}
+optax = "^0.2.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.8"
