@@ -1,11 +1,21 @@
 from abc import ABC, abstractmethod
+from typing import Protocol
 
 import jax.numpy as jnp
 import numpy as np
 
 
+class Model(Protocol):
+    weights: jnp.ndarray
+
+    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray: ...
+
+
 class BaseAttack(ABC):
     """Abstract base class for adversarial attacks."""
+
+    def __init__(self, model):
+        self._model = model
 
     @abstractmethod
     def generate(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:

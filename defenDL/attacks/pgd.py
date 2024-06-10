@@ -1,29 +1,21 @@
 from __future__ import annotations
 
-from typing import Callable
-
 import jax
 import jax.numpy as jnp
 import numpy as np
 
-from .base import BaseAttack
+from .base import BaseAttack, Model
 
 
 class PGD(BaseAttack):
     """Implement the Projected Gradient Descent (PGD) attack."""
 
-    def __init__(
-        self,
-        model: Callable[[jnp.ndarray], jnp.ndarray],
-        eps: float,
-        alpha: float,
-        num_iter: int,
-    ):
+    def __init__(self, model: Model, eps: float, alpha: float, num_iter: int):
         """Initialize the PGD attack.
 
         Parameters
         ----------
-        model : Callable[[jnp.ndarray], jnp.ndarray]
+        model : Model
             The model to attack.
         eps : float
             The perturbation magnitude.

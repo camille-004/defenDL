@@ -1,25 +1,21 @@
 from __future__ import annotations
 
-from typing import Callable
-
 import jax
 import jax.numpy as jnp
 import numpy as np
 
-from .base import BaseAttack
+from .base import BaseAttack, Model
 
 
 class FGSM(BaseAttack):
     """Implement the Fast Gradient Sign Method (FGSM)."""
 
-    def __init__(
-        self, model: Callable[[jnp.ndarray], jnp.ndarray], eps: float
-    ):
+    def __init__(self, model: Model, eps: float):
         """Initialize the FGSM attack.
 
         Parameters
         ----------
-        model : Callable[[np.ndarray], np.ndarray]
+        model : Model
             The model to attack.
         eps : float
             The perturbation magnitude.

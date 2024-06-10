@@ -1,32 +1,34 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable
 
 import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from defenDL.attacks import PGD
+from defenDL.attacks import PGD, Model
 
 
 @dataclass
-class DummyModel:
+class DummyModel(Model):
     weights: jnp.ndarray = field(
         default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
     )
 
+    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray:
+        return jnp.dot(x, params)
+
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        return jnp.dot(x, self.weights)
+        return self.apply(self.weights, x)
 
 
 class TestPGD:
     @pytest.fixture
-    def model(self) -> Callable[[jnp.ndarray], jnp.ndarray]:
+    def model(self) -> Model:
         return DummyModel()
 
     @pytest.fixture
-    def pgd(self, model: Callable[[jnp.ndarray], jnp.ndarray]) -> PGD:
+    def pgd(self, model: Model) -> PGD:
         eps = 0.1
         alpha = 0.01
         num_iter = 40
@@ -83,11 +85,7 @@ class TestPGD:
         [(0.1, 0.01, 40), (0.2, 0.02, 30), (0.3, 0.03, 20)],
     )
     def test_pgd_different_params(
-        self,
-        model: Callable[[jnp.ndarray], jnp.ndarray],
-        eps: float,
-        alpha: float,
-        num_iter: int,
+        self, model: Model, eps: float, alpha: float, num_iter: int
     ) -> None:
         pgd = PGD(model, eps, alpha, num_iter)
 

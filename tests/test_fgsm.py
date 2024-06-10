@@ -1,32 +1,34 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable
 
 import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from defenDL.attacks import FGSM
+from defenDL.attacks import FGSM, Model
 
 
 @dataclass
-class DummyModel:
+class DummyModel(Model):
     weights: jnp.ndarray = field(
         default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
     )
 
+    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray:
+        return jnp.dot(x, params)
+
     def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        return jnp.dot(x, self.weights)
+        return self.apply(self.weights, x)
 
 
 class TestFGSM:
     @pytest.fixture
-    def model(self) -> Callable[[jnp.ndarray], jnp.ndarray]:
+    def model(self) -> DummyModel:
         return DummyModel()
 
     @pytest.fixture
-    def fgsm(self, model: Callable[[jnp.ndarray], jnp.ndarray]) -> FGSM:
+    def fgsm(self, model: Model) -> FGSM:
         eps = 0.1
         return FGSM(model, eps)
 
@@ -77,9 +79,7 @@ class TestFGSM:
         ).all(), "Adversarial examples should be within the data range [0, 1]."
 
     @pytest.mark.parametrize("eps", [0.0, 0.05, 0.1, 0.2])
-    def test_gfsm_different_eps(
-        self, model: Callable[[jnp.ndarray], jnp.ndarray], eps: float
-    ) -> None:
+    def test_gfsm_different_eps(self, model: Model, eps: float) -> None:
         fgsm = FGSM(model, eps)
 
         x = np.array([[0.5, 0.5], [0.1, 0.9]])

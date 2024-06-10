@@ -8,12 +8,12 @@ import optax
 import pytest
 from jax import random
 
-from defenDL.attacks import FGSM
+from defenDL.attacks import FGSM, PGD, BaseAttack, Model
 from defenDL.defenses import Trainer
 
 
 @dataclass
-class DummyModel:
+class DummyModel(Model):
     weights: jnp.ndarray = field(
         default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
     )
@@ -52,7 +52,25 @@ class TestTrainer:
     ) -> Trainer:
         return Trainer(model, optimizer, attack, rng_key)
 
-    def test_training_step(self, trainer: Trainer) -> None:
+    @pytest.mark.parametrize(
+        "attack_class, attack_params",
+        [
+            (FGSM, {"eps": 0.1}),
+            (PGD, {"eps": 0.1, "alpha": 0.01, "num_iter": 40}),
+        ],
+    )
+    def test_training_step(
+        self,
+        trainer: Trainer,
+        attack_class: type[BaseAttack],
+        attack_params: dict[str, Any],
+    ) -> None:
+        model = DummyModel()
+        attack = attack_class(model, **attack_params)
+        trainer = Trainer(
+            model, optax.sgd(learning_rate=0.01), attack, random.PRNGKey(0)
+        )
+
         x = jnp.array([[0.5, 0.5], [0.1, 0.9]])
         y = jnp.array([1, 0])
 
@@ -63,7 +81,22 @@ class TestTrainer:
         ), "Parameters should not be None after training step."
         assert loss is not None, "Loss should not be None after training step."
 
-    def test_training(self, trainer: Trainer) -> None:
+    @pytest.mark.parametrize(
+        "attack_class, attack_params",
+        [
+            (FGSM, {"eps": 0.1}),
+            (PGD, {"eps": 0.1, "alpha": 0.01, "num_iter": 40}),
+        ],
+    )
+    def test_training(
+        self, attack_class: type[BaseAttack], attack_params: dict[str, Any]
+    ) -> None:
+        model = DummyModel()
+        attack = attack_class(model, **attack_params)
+        trainer = Trainer(
+            model, optax.sgd(learning_rate=0.01), attack, random.PRNGKey(0)
+        )
+
         dataset = [(jnp.array([[0.5, 0.5], [0.1, 0.9]]), jnp.array([1, 0]))]
 
         trainer.train(dataset, epochs=1)
