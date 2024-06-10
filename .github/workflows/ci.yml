@@ -22,14 +22,11 @@ jobs:
             - name: Install Poetry
               run: curl -sSL https://install.python-poetry.org | python3 -
 
-            - name: Set Poetry config
-              run: |
-                poetry config settings.virtualenvs.in-project false
-                poetry config settings.virtualenvs.path ~/.virtualenvs
-
             - name: Install dependencies
               run: |
                 poetry install --with dev
+                pip install "jax[cpu]==0.4.28" --platform=darwin
+
 
             - name: Run linters
               run: make lint
