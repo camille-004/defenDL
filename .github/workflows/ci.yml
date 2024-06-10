@@ -23,7 +23,7 @@ jobs:
               uses: snok/install-poetry@v1
 
             - name: Install dependencies
-              uses: poetry install
+              run: poetry install
 
             - name: Run linters
               run: make lint
