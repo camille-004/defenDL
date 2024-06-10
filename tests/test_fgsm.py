@@ -6,7 +6,8 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from defenDL.attacks import FGSM, Model
+from defenDL.attacks import FGSM
+from defenDL.base import Model
 
 
 @dataclass
@@ -79,7 +80,7 @@ class TestFGSM:
         ).all(), "Adversarial examples should be within the data range [0, 1]."
 
     @pytest.mark.parametrize("eps", [0.0, 0.05, 0.1, 0.2])
-    def test_gfsm_different_eps(self, model: Model, eps: float) -> None:
+    def test_fgsm_different_eps(self, model: Model, eps: float) -> None:
         fgsm = FGSM(model, eps)
 
         x = np.array([[0.5, 0.5], [0.1, 0.9]])

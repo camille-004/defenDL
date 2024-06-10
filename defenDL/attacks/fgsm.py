@@ -4,7 +4,9 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from .base import BaseAttack, Model
+from defenDL.base import Model
+
+from .base import BaseAttack
 
 
 class FGSM(BaseAttack):

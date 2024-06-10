@@ -1,14 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Protocol
 
 import jax.numpy as jnp
 import numpy as np
-
-
-class Model(Protocol):
-    weights: jnp.ndarray
-
-    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray: ...
 
 
 class BaseAttack(ABC):

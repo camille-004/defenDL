@@ -8,7 +8,8 @@ import optax
 import pytest
 from jax import random
 
-from defenDL.attacks import CW, FGSM, PGD, BaseAttack, Model
+from defenDL.attacks import CW, FGSM, PGD, BaseAttack
+from defenDL.base import Model
 from defenDL.defenses import Trainer
 
 

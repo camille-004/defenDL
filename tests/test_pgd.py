@@ -6,7 +6,8 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from defenDL.attacks import PGD, Model
+from defenDL.attacks import PGD
+from defenDL.base import Model
 
 
 @dataclass
@@ -65,7 +66,7 @@ class TestPGD:
 
         assert (
             x_adv.size == 0
-        ), "Adverarial example generated from empty input should also be empty."  # noqa
+        ), "Adversarial example generated from empty input should also be empty."  # noqa
 
     def test_pgd_single_data_point(self, pgd: PGD) -> None:
         x = np.array([[0.5, 0.5]])
@@ -75,7 +76,7 @@ class TestPGD:
 
         assert (
             x_adv.shape == x.shape
-        ), "The shape of adverarial inputs should match the input shape."
+        ), "The shape of adversarial inputs should match the input shape."
         assert (x_adv >= 0).all() and (
             x_adv <= 1
         ).all(), "Adversarial examples should be within the data range [0, 1]."

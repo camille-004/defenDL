@@ -6,7 +6,8 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from defenDL.attacks import CW, Model
+from defenDL.attacks import CW
+from defenDL.base import Model
 
 
 @dataclass
