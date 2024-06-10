@@ -4,8 +4,10 @@ from typing import Any, Protocol
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 import optax
-from attacks import BaseAttack
+
+from defenDL.attacks import BaseAttack
 
 
 class Model(Protocol):
@@ -60,7 +62,10 @@ class Trainer:
         tuple[jnp.ndarray, jnp.ndarray]
             The updated model parameters and the loss.
         """
-        examples = self._attack.generate(x, y)
+        x_np = np.array(x)
+        y_np = np.array(y)
+
+        examples = self._attack.generate(x_np, y_np)
 
         def loss_fn(params):
             logits = self._model.apply(params, examples)
