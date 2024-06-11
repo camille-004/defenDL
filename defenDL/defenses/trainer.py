@@ -4,11 +4,12 @@ from typing import Any
 
 import jax
 import jax.numpy as jnp
-import numpy as np
 import optax
 
 from defenDL.attacks import BaseAttack
-from defenDL.base import Model
+from defenDL.base.model import Model
+from defenDL.common.types import Array
+from defenDL.utils import validate_array
 
 
 class Trainer:
@@ -41,15 +42,15 @@ class Trainer:
         self._rng_key = rng_key
 
     def train_step(
-        self, x: jnp.ndarray, y: jnp.ndarray
+        self, x: Array, y: Array
     ) -> tuple[jnp.ndarray, jnp.ndarray]:
         """Perform one step of the training.
 
         Parameters
         ----------
-        x : jnp.ndarray
+        x : Array
             The input data.
-        y : jnp.ndarray
+        y : Array
             The true labels for the input data.
 
         Returns
@@ -57,10 +58,10 @@ class Trainer:
         tuple[jnp.ndarray, jnp.ndarray]
             The updated model parameters and the loss.
         """
-        x_np = np.array(x)
-        y_np = np.array(y)
+        x = validate_array(x, "x")
+        y = validate_array(y, "y")
 
-        examples = self._attack.generate(x_np, y_np)
+        examples = self._attack.generate(x, y)
 
         def loss_fn(params):
             logits = self._model.apply(params, examples)
@@ -77,17 +78,21 @@ class Trainer:
 
         return self._model.weights, loss
 
-    def train(self, dataset: Any, epochs: int) -> None:
+    def train(self, dataset: tuple[Array, Array], epochs: int) -> None:
         """Traing the model with adversarial training.
 
         Parameters
         ----------
-        dataset : Any
+        dataset : tuple[Array, Array]
             The training dataset.
         epochs : int
             The number of epochs to train for.
         """
+        inputs, labels = dataset
+
+        inputs = validate_array(inputs, "inputs")
+        labels = validate_array(labels, "labels")
+
         for epoch in range(epochs):
-            for x, y in dataset:
-                params, loss = self.train_step(x, y)
-                print(f"Epoch {epoch}, Loss: {loss}")
+            params, loss = self.train_step(inputs, labels)
+            print(f"Epoch {epoch}, Loss: {loss}")

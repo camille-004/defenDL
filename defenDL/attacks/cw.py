@@ -5,7 +5,9 @@ import jax.numpy as jnp
 import numpy as np
 import optax
 
-from defenDL.base import Model
+from defenDL.base.model import Model
+from defenDL.common.types import Array
+from defenDL.utils import validate_array
 
 from .base import BaseAttack
 
@@ -46,19 +48,19 @@ class CW(BaseAttack):
         self._max_iter = max_iter
         self._initial_const = initial_const
 
-    def generate(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def generate(self, x: Array, y: Array) -> np.ndarray:
+        x = validate_array(x, "x")
+        y = validate_array(y, "y")
+
         if x.size == 0 or y.size == 0:
             return np.array([])
 
-        x_jax = jnp.array(x)
-        y_jax = jnp.array(y)
-
         def loss_fn(delta: jnp.ndarray, c: float):
-            adv_x = x_jax + delta
-            logits = self._model(adv_x)
-            real = logits[jnp.arange(logits.shape[0]), y_jax]
+            adv_x = x + delta
+            logits = self._model.apply(self._model.weights, adv_x)
+            real = logits[jnp.arange(logits.shape[0]), y]
             other = jnp.max(
-                logits * (1 - jax.nn.one_hot(y_jax, logits.shape[1])), axis=1
+                logits * (1 - jax.nn.one_hot(y, logits.shape[1])), axis=1
             )
             return c * jnp.sum(
                 jnp.maximum(0, other - real + self._confidence)
@@ -82,12 +84,12 @@ class CW(BaseAttack):
         # Binary search over `c`
         lower_bound = 0.0
         upper_bound = 1e10
-        best_delta = jnp.zeros_like(x_jax)
+        best_delta = jnp.zeros_like(x)
         best_loss = float("inf")
 
         for _ in range(self._binary_search_steps):
             c = (lower_bound + upper_bound) / 2
-            delta = jnp.zeros_like(x_jax)
+            delta = jnp.zeros_like(x)
             delta = optimize(delta, c)
             loss = loss_fn(delta, c)
 
@@ -100,10 +102,10 @@ class CW(BaseAttack):
             else:
                 lower_bound = c
 
-        x_adv = x_jax + best_delta
+        x_adv = x + best_delta
         x_adv = jnp.clip(x_adv, 0, 1)
 
         return np.array(x_adv)
 
-    def _gradient(self, x: jnp.ndarray, y: jnp.ndarray) -> jnp.ndarray:
+    def _gradient(self, x: Array, y: Array) -> Array:
         raise NotImplementedError("CW attack does not use _gradient method.")

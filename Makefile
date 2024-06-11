@@ -15,3 +15,6 @@ type-check:
 
 test:
 	poetry run pytest
+
+test-failed:
+	poetry run pytest --lf

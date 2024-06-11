@@ -4,17 +4,18 @@ import jax.numpy as jnp
 import numpy as np
 
 from defenDL.attacks import BaseAttack
-from defenDL.base import Model
+from defenDL.base.model import Model
+from defenDL.common.types import Array
 
 
-def accuracy(predictions: jnp.ndarray, labels: jnp.ndarray) -> float:
+def accuracy(predictions: Array, labels: Array) -> float:
     """Compute accuracy.
 
     Parameters
     ----------
-    predictions : jnp.ndarray
+    predictions : Array
         The predicted labels.
-    labels : jnp.ndarray
+    labels : Array
         The true labels.
 
     Returns
@@ -25,16 +26,14 @@ def accuracy(predictions: jnp.ndarray, labels: jnp.ndarray) -> float:
     return jnp.mean(predictions == labels).item()
 
 
-def eval_model(
-    model: Model, dataset: tuple[jnp.ndarray, jnp.ndarray]
-) -> float:
+def eval_model(model: Model, dataset: tuple[Array, Array]) -> float:
     """Evaluate the model on a dataset.
 
     Parameters
     ----------
     model : Model
         The model to evaluate.
-    dataset : tuple[jnp.ndarray, jnp.ndarray]
+    dataset : tuple[Array, Array]
         The dataset to evaluate on (inputs, labels).
 
     Returns
@@ -49,7 +48,7 @@ def eval_model(
 
 
 def eval_robustness(
-    model: Model, attack: BaseAttack, dataset: tuple[jnp.ndarray, jnp.ndarray]
+    model: Model, attack: BaseAttack, dataset: tuple[Array, Array]
 ) -> float:
     """Evaluate the robustness of a model against an attack.
 
@@ -59,7 +58,7 @@ def eval_robustness(
         The model to evaluate.
     attack : BaseAttack
         The adversarial attack to evaluate against.
-    dataset : tuple[jnp.ndarray, jnp.ndarray]
+    dataset : tuple[Array, Array]
         The dataset to evaluate on (inputs, labels).
 
     Returns

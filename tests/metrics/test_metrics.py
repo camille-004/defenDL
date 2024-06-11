@@ -1,26 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 import jax.numpy as jnp
 import pytest
 
 from defenDL.attacks import FGSM, BaseAttack
-from defenDL.base import Model
+from defenDL.base.model import Model
 from defenDL.metrics import accuracy, eval_model, eval_robustness
-
-
-@dataclass
-class DummyModel(Model):
-    weights: jnp.ndarray = field(
-        default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
-    )
-
-    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray:
-        return jnp.dot(x, params)
-
-    def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        return self.apply(self.weights, x)
+from tests.common import DummyModel
 
 
 class TestMetric:

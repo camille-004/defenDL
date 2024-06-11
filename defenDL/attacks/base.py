@@ -1,47 +1,47 @@
 from abc import ABC, abstractmethod
 
-import jax.numpy as jnp
-import numpy as np
+from defenDL.base.model import Model
+from defenDL.common.types import Array
 
 
 class BaseAttack(ABC):
     """Abstract base class for adversarial attacks."""
 
-    def __init__(self, model):
+    def __init__(self, model: Model):
         self._model = model
 
     @abstractmethod
-    def generate(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def generate(self, x: Array, y: Array) -> Array:
         """Generate adversarial examples.
 
         Parameters
         ----------
-        x : np.ndarray
+        x : Array
             The input data.
-        y : np.ndarray
+        y : Array
             The true labels for the input data.
 
         Returns
         -------
-        np.ndarray
+        Array
             The adversarial examples.
         """
         pass
 
     @abstractmethod
-    def _gradient(self, x: jnp.ndarray, y: jnp.ndarray) -> jnp.ndarray:
+    def _gradient(self, x: Array, y: Array) -> Array:
         """Computes the gradient of the loss w.r.t. input data.
 
         Parameters
         ----------
-        x : jnp.ndarray
+        x : Array
             The input data.
-        y : jnp.ndarray
+        y : Array
             The true labels for the input data.
 
         Returns
         -------
-        jnp.ndarray
+        Array
             The computed gradients.
         """
         pass

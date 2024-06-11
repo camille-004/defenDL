@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any
 
 import jax.numpy as jnp
@@ -8,21 +7,9 @@ import optax
 import pytest
 from jax import random
 
-from defenDL.base import Model
+from defenDL.base.model import Model
 from defenDL.defenses import Distillation
-
-
-@dataclass
-class DummyModel(Model):
-    weights: jnp.ndarray = field(
-        default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
-    )
-
-    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray:
-        return jnp.dot(x, params)
-
-    def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        return self.apply(self.weights, x)
+from tests.common import DummyModel
 
 
 class TestDistillation:
@@ -77,6 +64,8 @@ class TestDistillation:
         assert loss is not None, "Loss should not be None after training step."
 
     def test_train(self, distillation: Distillation) -> None:
-        dataset = [jnp.array([[0.5, 0.5], [0.1, 0.9]])]
+        inputs = jnp.array([[0.5, 0.5], [0.1, 0.9]])
+        labels = jnp.array([0, 1])
+        dataset = (inputs, labels)
 
         distillation.train(dataset, epochs=1)

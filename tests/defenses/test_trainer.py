@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any
 
 import jax.numpy as jnp
@@ -9,21 +8,8 @@ import pytest
 from jax import random
 
 from defenDL.attacks import CW, FGSM, PGD, BaseAttack
-from defenDL.base import Model
 from defenDL.defenses import Trainer
-
-
-@dataclass
-class DummyModel(Model):
-    weights: jnp.ndarray = field(
-        default_factory=lambda: jnp.array([[0.1, 0.2], [0.3, 0.4]])
-    )
-
-    def apply(self, params: jnp.ndarray, x: jnp.ndarray) -> jnp.ndarray:
-        return jnp.dot(x, params)
-
-    def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
-        return self.apply(self.weights, x)
+from tests.common import DummyModel
 
 
 class TestTrainer:
@@ -118,6 +104,6 @@ class TestTrainer:
             model, optax.sgd(learning_rate=0.01), attack, random.PRNGKey(0)
         )
 
-        dataset = [(jnp.array([[0.5, 0.5], [0.1, 0.9]]), jnp.array([1, 0]))]
+        dataset = (jnp.array([[0.5, 0.5], [0.1, 0.9]]), jnp.array([1, 0]))
 
         trainer.train(dataset, epochs=1)
